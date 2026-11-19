@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#12182a"><title>TradeFlow · Admin console</title>
+  <link rel="stylesheet" href="/styles.css"><script defer src="/admin.js"></script>
+</head>
+<body class="admin-ui">
+  <header class="admin-topbar">
+    <div class="topbar-inner">
+      <div class="brand"><span class="brand-mark">TF</span><span><strong>TradeFlow</strong><small>Payment confirmation console</small></span></div>
+      <div class="topbar-actions" id="logged-in-actions" hidden><span class="user-badge" id="welcome"></span><button class="button button-quiet button-small" id="logout-btn">Log out</button></div>
+    </div>
+  </header>
+  <main class="admin-main">
+    <section id="login-view" class="login-card panel">
+      <div class="section-kicker">PRIVATE ADMIN AREA</div><h1>Welcome back</h1>
+      <p class="muted">Sign in with your assigned TradeFlow admin credentials. Each administrator has their own transactions and Telegram notifications.</p>
+      <form id="login-form" class="form-stack">
+        <label>Admin username<input name="username" autocomplete="username" minlength="3" required placeholder="Your username"></label>
+        <label>Password<input name="password" autocomplete="current-password" type="password" required placeholder="Your unique admin password"></label>
+        <button class="button button-primary" type="submit">Sign in to dashboard</button>
+      </form>
+      <p class="info-note">This is a TradeFlow account—not a Skrill, Binance, or Bybit account.</p>
+      <div class="inline-alert" id="login-alert" hidden role="alert"></div>
+    </section>
+    <section id="dashboard-view" hidden>
+      <div class="dashboard-heading"><div><div class="section-kicker">ADMIN WORKSPACE</div><h1>Payment requests</h1><p class="muted">Create private links, monitor every client step, and receive Telegram alerts.</p></div><button class="button button-quiet" id="refresh-btn">↻ Refresh</button></div>
+      <div class="metric-grid">
+        <article class="metric panel"><span>My requests</span><strong id="metric-total">0</strong></article>
+        <article class="metric panel"><span>Awaiting confirmation</span><strong id="metric-open">0</strong></article>
+        <article class="metric panel"><span>Accepted decisions</span><strong id="metric-accept">0</strong></article>
+        <article class="metric panel"><span>Rejected decisions</span><strong id="metric-reject">0</strong></article>
+      </div>
+      <div class="workspace-grid">
+        <section class="panel create-panel">
+          <div class="section-kicker">01 / NEW TRANSACTION</div><h2>Create payment link</h2><p class="muted small">Share the trade reference through your existing trade chat. The client submits it here later, and you approve or reject it in Telegram. No pre-matched code is generated.</p>
+          <form id="trade-form" class="form-stack">
+            <div class="field-row">
+              <label>Trading platform<select name="platform" required><option>Skrill</option><option>Binance</option><option>Bybit</option></select></label>
+              <label>Client reference <small>(optional)</small><input name="clientLabel" maxlength="100" placeholder="e.g. Client 402"></label>
+            </div>
+            <label>Bank name<input name="bankName" maxlength="100" required placeholder="e.g. Client's destination bank"></label>
+            <div class="field-row">
+              <label>Trade ID<input name="tradeId" maxlength="100" required placeholder="TRD-2026-001"></label>
+              <label>Transaction ID<input name="transactionId" maxlength="100" required placeholder="TXN-825198"></label>
+            </div>
+            <div class="field-row">
+              <label>Amount<input name="amount" required inputmode="decimal" pattern="[0-9]+(\.[0-9]{1,8})?" placeholder="5000.00"></label>
+              <label>Currency<select id="currency" name="currency" required><option value="USD">USD</option><option value="KES">KES</option><option value="EUR">EUR</option><option value="USDT">USDT</option></select></label>
+            </div>
+            <div class="field-row">
+              <label>Link expires after<select name="expiryHours"><option value="24">24 hours</option><option value="72">3 days</option><option value="168" selected>7 days</option><option value="336">14 days</option></select></label>
+            </div>
+            <button type="submit" class="button button-primary" id="create-btn">Generate payment link</button>
+          </form>
+          <div class="inline-alert" id="create-alert" hidden role="status"></div>
+          <section class="generated panel-soft" id="generated" hidden><div class="section-kicker">REQUEST CREATED</div><h3>Ready to share</h3><p class="muted small">Send the private link to your client. Provide your own trade reference in the existing trade chat; this portal will NOT generate or check a preset code.</p><label>Client link<div class="copy-row"><input id="new-link" readonly><button type="button" class="button button-primary button-small" data-copy="new-link">Copy</button></div></label></section>
+        </section>
+        <section class="panel activity-panel">
+          <div class="section-heading"><div><div class="section-kicker">02 / ALERTS</div><h2>Telegram & activity</h2></div><span class="pill" id="telegram-status">Checking…</span></div>
+          <p class="muted small">All steps are saved here and sent to your Telegram bot. Submitted trade references arrive with Approve / Reject buttons. Use a PRIVATE admin bot chat to authorize decisions. No client passwords, OTPs or full contact details are collected.</p>
+          <button class="button button-quiet button-small" id="telegram-test">Send test Telegram alert</button>
+          <div class="activity-list" id="activity-list"><p class="muted">No activity yet.</p></div>
+        </section>
+      </div>
+      <section class="panel transaction-panel"><div class="section-heading"><div><div class="section-kicker">03 / MY REQUESTS</div><h2>Transaction history</h2></div><span class="muted small">Only requests assigned to this admin</span></div><div id="trades-list" class="trades-list"><p class="muted">No transactions yet.</p></div></section>
+      <p class="footer-note">TradeFlow is an independent confirmation portal. A client's decision is not proof that funds were transferred by a bank or trading platform.</p>
+    </section>
+  </main>
+</body></html>
